@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<!-- This launch file connects to a hexapod and 
+     provides an RQT GUI. -->
+
+<launch>
+  <arg name="hexapod_params" default="$(find pi_hexapod_description)/cfg/H-811.i2.yaml" />
+  <arg name="sim" default="false" />
+
+  <include file="$(find pi_hexapod_control)/launch/hexapod_common_control.launch">
+    <arg name="hexapod_params" value="$(arg hexapod_params)"/>
+    <arg name="sim"            value="$(arg sim)"/>
+    <arg name="gui"            value="false"/>
+  </include>
+
+  <node name = "rqt_dashboard" pkg = "rqt_gui" type = "rqt_gui" respawn = "false" output = "screen" 
+    args = "--perspective-file $(find pi_hexapod_gui)/rqt/gui_mainboard.perspective"/>
+
+</launch>

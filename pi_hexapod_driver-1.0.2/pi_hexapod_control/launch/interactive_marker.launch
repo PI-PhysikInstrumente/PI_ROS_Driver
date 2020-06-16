@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<!-- This launch file connects to a hexapod and 
+     provides an interactive marker server to control a hexapod via RViz. -->
+
+<launch>
+  <arg name="hexapod_params" default="$(find pi_hexapod_description)/cfg/H-811.i2.yaml" />
+  <arg name="sim" default="false" />
+  <arg name="autostart_publishing_commands" default="true" />
+
+  <include file="$(find pi_hexapod_control)/launch/hexapod_common_control.launch">
+    <arg name="hexapod_params"      value="$(arg hexapod_params)"/>
+    <arg name="sim"                 value="$(arg sim)"/>
+    <arg name="controllers"         value="joint_state_controller joint_group_pos_controller" />
+    <arg name="stopped_controllers" value="joint_trajectory_controller cart_x_controller cart_y_controller cart_z_controller ang_u_controller ang_v_controller ang_w_controller" />
+  </include>
+
+  <node name="interactive_marker_node" pkg="pi_hexapod_control" type="interactive_marker_node" output="screen" required="true">
+    <rosparam command="load" file="$(arg hexapod_params)" />
+    <param name="autostart_publishing_commands" type="bool" value="$(arg autostart_publishing_commands)" />
+    <remap from="interactive_marker_node/command" to="/joint_group_pos_controller/command" />
+    <remap from="interactive_marker_node/joint_states" to="/joint_states" />
+  </node>
+
+</launch>

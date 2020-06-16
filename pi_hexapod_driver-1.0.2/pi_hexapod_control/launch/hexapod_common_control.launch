@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<!-- This launch file serves as example on how to connect to a hexapod.
+     Also, it can be easily included in other launch files, 
+     allowing for easy configuration due to using smart default arguments. -->
+
+<launch>
+  <arg name="sim" default="false" />
+  <arg name="gui" default="true" />
+
+  <!-- connection configuration:
+       using_tcp_ip_connection and using_rs232_connection are mutually exclusive -->
+  <arg name="using_tcp_ip_connection"   default="true" doc="Use IP/Port to connect to Hexapod Controller" />
+  <arg name="hexapod_ip"                default="169.254.10.248" />
+  <arg name="hexapod_port"              default="50000" />
+  <arg name="using_rs232_connection"    default="false" doc="Use Serial Connection to connect to Hexapod Controller" />
+  <arg name="rs232_port_nr"             default="1" />
+  <arg name="baudrate"                  default="2400" />
+
+  <!-- Controller Configuration -->
+  <arg name="controllers"               default="joint_state_controller" />
+  <arg name="stopped_controllers"       default="joint_trajectory_controller joint_group_pos_controller cart_x_controller cart_y_controller cart_z_controller ang_u_controller ang_v_controller ang_w_controller" />
+  <arg name="controller_config_file"    default="$(find pi_hexapod_control)/cfg/hexapod_controllers.yaml" />
+  <rosparam file="$(arg controller_config_file)" command="load" />
+
+  <!-- Hexapod behavior configuration -->
+  <arg name="auto_referencing"          default="true"  doc="Reference Hexapod on startup" />
+  <arg name="prefer_stop_over_halt"     default="false" doc="If true, use STP instead of HLT command" />
+
+  <!-- Robot description -->
+  <arg name="hexapod_params"            default="$(find pi_hexapod_description)/cfg/H-811.i2.yaml" />
+  <arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface" />
+  <param name="robot_description" command="$(find xacro)/xacro '$(find pi_hexapod_description)/urdf/pi_hexapod.urdf.xacro'
+    hexapod_params:=$(arg hexapod_params)
+    transmission_hw_interface:=$(arg transmission_hw_interface)" />
+
+  <!-- Nodes -->
+
+  <node name="pi_hardware_interface" pkg="pi_hexapod_control" type="pi_hexapod_control_node" output="screen" required="true">
+    <rosparam command="load" file="$(arg hexapod_params)" />
+
+    <param name="using_tcp_ip_connection" type="bool" value="$(arg using_tcp_ip_connection)" />
+    <param name="hexapod_ip"              type="str"  value="$(arg hexapod_ip)" />
+    <param name="hexapod_port"            type="int"  value="$(arg hexapod_port)" />
+
+    <param name="using_rs232_connection"  type="bool" value="$(arg using_rs232_connection)" />
+    <param name="rs232_port_nr"           type="int"  value="$(arg rs232_port_nr)" />
+    <param name="baudrate"                type="int"  value="$(arg baudrate)" />
+
+    <param name="is_sim"                  type="bool" value="$(arg sim)" />
+    <param name="auto_referencing"        type="bool" value="$(arg auto_referencing)" />
+    <param name="prefer_stop_over_halt"   type="bool" value="$(arg prefer_stop_over_halt)" />
+  </node>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+
+  <node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="$(arg controllers)" />
+
+  <node name="ros_control_stopped_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="--stopped $(arg stopped_controllers)" />
+
+  <group if="$(arg gui)">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pi_hexapod_control)/cfg/default_hexapod.rviz" required="false" />
+  </group>
+</launch>

@@ -1,0 +1,89 @@
+# This file contains the configuration for different ROS Controllers
+# to be used with PI Hexapods.
+# It also serves as example on how to configure Controllers to be used
+# with this package.
+
+hardware_interface:
+   controller_rate: &controller_rate 100
+   # actuated 6D-Pose of Hexapod platform
+   joints: &robot_joints
+     - cart_x
+     - cart_y
+     - cart_z
+     - ang_u
+     - ang_v
+     - ang_w
+   # read-only, calculated joints to visualize actuators
+   visual_joints: &visual_joints
+     - axis0_base_anchor_joint_x
+     - axis0_base_anchor_joint_y
+     - axis0_base_anchor_joint_z
+     - axis0_platform_anchor_joint_x
+     - axis0_platform_anchor_joint_y
+     - axis0_platform_anchor_joint_z
+     - axis1_base_anchor_joint_x
+     - axis1_base_anchor_joint_y
+     - axis1_base_anchor_joint_z
+     - axis1_platform_anchor_joint_x
+     - axis1_platform_anchor_joint_y
+     - axis1_platform_anchor_joint_z
+     - axis2_base_anchor_joint_x
+     - axis2_base_anchor_joint_y
+     - axis2_base_anchor_joint_z
+     - axis2_platform_anchor_joint_x
+     - axis2_platform_anchor_joint_y
+     - axis2_platform_anchor_joint_z
+     - axis3_base_anchor_joint_x
+     - axis3_base_anchor_joint_y
+     - axis3_base_anchor_joint_z
+     - axis3_platform_anchor_joint_x
+     - axis3_platform_anchor_joint_y
+     - axis3_platform_anchor_joint_z
+     - axis4_base_anchor_joint_x
+     - axis4_base_anchor_joint_y
+     - axis4_base_anchor_joint_z
+     - axis4_platform_anchor_joint_x
+     - axis4_platform_anchor_joint_y
+     - axis4_platform_anchor_joint_z
+     - axis5_base_anchor_joint_x
+     - axis5_base_anchor_joint_y
+     - axis5_base_anchor_joint_z
+     - axis5_platform_anchor_joint_x
+     - axis5_platform_anchor_joint_y
+     - axis5_platform_anchor_joint_z
+
+joint_state_controller:
+   type:         joint_state_controller/JointStateController
+   publish_rate: *controller_rate
+
+joint_group_pos_controller:
+   type: position_controllers/JointGroupPositionController
+   joints: *robot_joints
+
+joint_trajectory_controller:
+  type: position_controllers/JointTrajectoryController
+  joints: *robot_joints
+
+cart_x_controller:
+   type: position_controllers/JointPositionController
+   joint: cart_x
+
+cart_y_controller:
+   type: position_controllers/JointPositionController
+   joint: cart_y
+
+cart_z_controller:
+   type: position_controllers/JointPositionController
+   joint: cart_z
+
+ang_u_controller:
+   type: position_controllers/JointPositionController
+   joint: ang_u
+
+ang_v_controller:
+   type: position_controllers/JointPositionController
+   joint: ang_v
+
+ang_w_controller:
+   type: position_controllers/JointPositionController
+   joint: ang_w

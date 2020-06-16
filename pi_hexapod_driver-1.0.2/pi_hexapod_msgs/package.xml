@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pi_hexapod_msgs</name>
+  <version>1.0.2</version>
+  <description>Messages, Services and Actions for Physik Instrumente (PI) Hexapods</description>
+
+  <maintainer email="todo@todo.todo">TODO</maintainer>
+
+  <license>TODO</license>
+
+  <author email="eichmann@fzi.de">Christian Eichmann</author>
+  <author email="keller@fzi.de">Philip Keller</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_export_depend>actionlib</build_export_depend>
+  <build_export_depend>actionlib_msgs</build_export_depend>
+  <build_export_depend>message_generation</build_export_depend>
+  <exec_depend>actionlib</exec_depend>
+  <exec_depend>actionlib_msgs</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+
+  <export>
+  </export>
+</package>

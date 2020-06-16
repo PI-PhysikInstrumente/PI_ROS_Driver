@@ -1,0 +1,9 @@
+<!-- Configuration of exported pluginlib plugins -->
+
+<library path="lib/libpi_hexapod_driver_plugin">
+  <class name="pi_hexapod_control/HardwareInterface" type="pi_hexapod_control::HardwareInterface" base_class_type="hardware_interface::RobotHW">
+    <description>
+      PI Hexapod ROS Driver as plugin
+    </description>
+  </class>
+</library>

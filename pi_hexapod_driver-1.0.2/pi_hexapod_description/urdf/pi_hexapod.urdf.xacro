@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!-- This file wraps the macro to create an URDF description of a PI Hexapod for easy usage. -->
+
+<robot xmlns:xacro="http://wiki.ros.org/xacro"
+       name="pi" >
+
+   <!-- parameters -->
+   <xacro:arg name="hexapod_params" default=""/>
+   <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
+   <!-- common stuff -->
+   <xacro:include filename="$(find pi_hexapod_description)/urdf/pi_hexapod.macro.xacro"/>
+
+   <xacro:pi_hexapod hexapod_parameters="${load_yaml('$(arg hexapod_params)')}"
+                     transmission_hw_interface="$(arg transmission_hw_interface)"/>
+
+</robot>

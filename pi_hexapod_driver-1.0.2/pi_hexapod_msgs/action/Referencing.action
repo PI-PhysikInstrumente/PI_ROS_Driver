@@ -1,0 +1,8 @@
+# This file describes a ROS Action to trigger the referencing movement of a PI Hexapod.
+
+# goal
+---
+# result
+bool success
+---
+# feedback

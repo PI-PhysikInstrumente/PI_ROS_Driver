@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pi_hexapod_gui</name>
+  <version>1.0.2</version>
+  <description>PI Hexapod Control GUI as plugin for rqt</description>
+
+  <maintainer email="todo@todo.todo">TODO</maintainer>
+
+  <license>TODO</license>
+
+  <author email="eichmann@fzi.de">Christian Eichmann</author>
+  <author email="keller@fzi.de">Philip Keller</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>rqt_gui</build_depend>
+  <build_depend>rqt_gui_py</build_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>rqt_gui</build_export_depend>
+  <build_export_depend>rqt_gui_py</build_export_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>rqt_gui</exec_depend>
+  <exec_depend>rqt_gui_py</exec_depend>
+  <exec_depend>pi_hexapod_msgs</exec_depend>
+
+  <export>
+    <rqt_gui plugin="${prefix}/plugin.xml"/>
+  </export>
+</package>

@@ -1,0 +1,515 @@
+# This configuration file describes the kinematics of the H-811.i2 PI Hexapod.
+#
+# Comments with a line number relate to the corresponding entry in the hexapod-specific datafile
+# Values are converted to meters and radians, as it is the standard in ROS.
+# Axis can be configured individually.
+
+base_height:    # line 13 (convert mm in m)
+  0.088326097
+vel_max_xyz:
+  0.005
+vel_max_uvw:
+  0.625
+effort_limit:
+  300
+
+
+base:
+  visual:
+    mesh:
+      "package://pi_hexapod_description/meshes/H-811/baseplate.stl"
+    scale:    # to convert from mm to m
+      0.001
+    x:        # M811_CAD.ini -> [H-811.I2] -> BaseplateOffset_X (conver mm in m) - 0.129
+      -0.128
+    y:        # M811_CAD.ini -> [H-811.I2] -> BaseplateOffset_Y (conver mm in m) - 0.068
+      -0.068
+    z:        # M811_CAD.ini -> [H-811.I2] -> BaseplateOffset_Z (conver mm in m) - 0.0085
+      -0.017
+    roll: 0.0
+    pitch: 0.0
+    yaw: 0.0
+  collision:
+    x: 0.0
+    y: 0.0
+    z: -0.0085
+    roll: 0.0
+    pitch: 0.0
+    yaw: 0.0
+    radius: 0.075
+    length: 0.019
+
+platform:
+  outer_radius: # line 117
+    0.05
+  inner_radius: # line 118
+    0.025
+  height:       # line 119
+    0.009
+  visual:
+    mesh:
+      "package://pi_hexapod_description/meshes/H-811/H_811.I2_platform.stl"
+    scale:    # to convert from mm to m
+      0.001
+    x:        # M811_CAD.ini -> [H-811.I2] -> PlatformOffset_X (conver mm in m)
+      0.0
+    y:        # M811_CAD.ini -> [H-811.I2] -> PlatformOffset_Y (conver mm in m)
+      0.0
+    z:        # M811_CAD.ini -> [H-811.I2] -> PlatformOffset_Z (conver mm in m)
+      0.0045
+    roll: 0.0
+    pitch: 0.0
+    yaw: 0.0
+  collision:
+    x: 0.0
+    y: 0.0
+    z: 0.0045
+    roll: 0.0
+    pitch: 0.0
+    yaw: 0.0
+    radius: 0.055
+    length: 0.01
+
+# Configuration of the six Degrees of Freedom
+x:
+  lower_limit:  # line 24 (convert mm in m)
+    -0.0170001
+  upper_limit:  # line 23 (convert mm in m)
+    0.0170001
+y:
+  lower_limit:  # line 27 (convert mm in m)
+    -0.0160001
+  upper_limit:  # line 26 (convert mm in m)
+    0.0160001
+z:
+  lower_limit:  # line 28 (convert mm in m)
+    -0.0065001
+  upper_limit:  # line 27 (convert mm in m)
+    0.0065001
+u:
+  lower_limit:  # line 30 (convert deg in rad)
+    -0.1745346705
+  upper_limit:  # line 29 (convert deg in rad)
+    0.1745346705
+v:
+  lower_limit:  # line 32 (convert deg in rad)
+    -0.1745346705
+  upper_limit:  # line 31 (convert deg in rad)
+    0.1745346705
+w:
+  lower_limit:  # line 34 (convert deg in rad)
+    -0.3665208882
+  upper_limit:  # line 33 (convert deg in rad)
+    0.3665208882
+
+# Configuration of the six Hardware Axis
+axis_0:
+  base_anchor:
+    x:          # line 75 (convert mm in m)
+      0.055773843
+    y:          # line 76 (convert mm in m)
+      0.012801635
+    z:          # line 77 (convert mm in m)
+      -0.088326097
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_LowerStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_X (conver mm in m) + 0.0038
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Z (conver mm in m) + 0.01
+        0.037
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:        # pi/2 - cos^-1( (75-38) / root((75-38)^2+(76-39)^2+(77-40)^2) )
+        0.31415924388
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.037
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+  platform_anchor:
+    x:          # line 94 (convert mm in m)
+      0.029355221
+    y:          # line 95 (convert mm in m)
+      0.025682309
+    z:          # line 96 (convert mm in m)
+      0.0
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_UpperStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_X (conver mm in m)
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Z (conver mm in m) + 0.01
+        0.039
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # -cos^-1(...)
+        -0.837758058361
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.039
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+
+
+axis_1:
+  base_anchor:
+    x:          # line 78 (convert mm in m)
+      -0.016800381
+    y:          # line 79 (convert mm in m)
+      0.054702383
+    z:          # line 80 (convert mm in m)
+      -0.088326097
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_LowerStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_X (conver mm in m) + 0.0038
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Z (conver mm in m) + 0.01
+        0.037
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # pi/2 + cos^-1(...)
+        1.78023590486
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.037
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+  platform_anchor:
+    x:          # line 97 (convert mm in m)
+      0.007563921
+    y:          # line 98 (convert mm in m)
+      0.038263522
+    z:          # line 99 (convert mm in m)
+      0.0
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_UpperStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_X (conver mm in m)
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Z (conver mm in m) + 0.01
+        0.039
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:       # pi/2 + cos^-1(...)
+        1.78023582661
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.039
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+
+
+axis_2:
+  base_anchor:
+    x:          # line 81 (convert mm in m)
+      -0.038973463
+    y:          # line 82 (convert mm in m)
+      0.041900747
+    z:          # line 83 (convert mm in m)
+      -0.088326097
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_LowerStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_X (conver mm in m) + 0.0038
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Z (conver mm in m) + 0.01
+        0.037
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # pi/2 + cos^-1(...)
+        2.40855433163
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.037
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+  platform_anchor:
+    x:          # line 100 (convert mm in m)
+      -0.036919143
+    y:          # line 101 (convert mm in m)
+      0.012581213
+    z:          # line 102 (convert mm in m)
+      0.0
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_UpperStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_X (conver mm in m)
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Z (conver mm in m) + 0.01
+        0.039
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # pi/2 - cos^-1(...)
+        0.314159219161
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.039
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+
+
+axis_3:
+  base_anchor:
+    x:          # line 84 (convert mm in m)
+      -0.038973463
+    y:          # line 85 (convert mm in m)
+      -0.041900748
+    z:          # line 86 (convert mm in m)
+      -0.088326097
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_LowerStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_X (conver mm in m) + 0.0038
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Z (conver mm in m) + 0.01
+        0.037
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # pi + cos^-1(...)
+        3.97935071195
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.037
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+  platform_anchor:
+    x:          # line 103 (convert mm in m)
+      -0.036919143
+    y:          # line 104 (convert mm in m)
+      -0.012581213
+    z:          # line 105 (convert mm in m)
+      0.0
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_UpperStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_X (conver mm in m)
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Z (conver mm in m) + 0.01
+        0.039
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # pi/2 + cos^-1(...)
+        2.82743343443
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.039
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+
+
+axis_4:
+  base_anchor:
+    x:          # line 87 (convert mm in m)
+      -0.016800381
+    y:          # line 88 (convert mm in m)
+      -0.054702383
+    z:          # line 89 (convert mm in m)
+      -0.088326097
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_LowerStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_X (conver mm in m) + 0.0038
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Z (conver mm in m) + 0.01
+        0.037
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:      # 3*pi/2 - cos^-1(...)
+        4.50294948057
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.037
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+  platform_anchor:
+    x:          # line 106 (convert mm in m)
+      0.007563922
+    y:          # line 107 (convert mm in m)
+      -0.038263522
+    z:          # line 108 (convert mm in m)
+      0.0
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_UpperStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_X (conver mm in m)
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Z (conver mm in m) + 0.01
+        0.039
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:     # pi/2 - cos^-1(...)
+        1.36135684362
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.039
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+
+
+axis_5:
+  base_anchor:
+    x:          # line 90 (convert mm in m)
+      0.055773843
+    y:          # line 91 (convert mm in m)
+      -0.012801635
+    z:          # line 92 (convert mm in m)
+      -0.088326097
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_LowerStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_X (conver mm in m) + 0.0038
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> LowerStrutOffset_Z (conver mm in m) + 0.01
+        0.037
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:     # -pi/2 + cos^-1(...)
+        -0.314159243882
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.037
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+  platform_anchor:
+    x:          # line 109 (convert mm in m)
+      0.029355222
+    y:          # line 110 (convert mm in m)
+      -0.025682309
+    z:          # line 111 (convert mm in m)
+      0.0
+    visual:
+      mesh:
+        "package://pi_hexapod_description/meshes/H-811/H-811.I2_UpperStrut.stl"
+      scale:    # to convert from mm to m
+        0.001
+      x:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_X (conver mm in m)
+        0.0
+      y:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Y (conver mm in m)
+        0.0
+      z:        # M811_CAD.ini -> [H-811.I2] -> UpperStrutOffset_Z (conver mm in m) + 0.01
+        0.039
+      roll: 1.57079632679
+      pitch: 0.0
+      yaw:     # cos^-1(...)
+        0.837757998909
+    collision:
+      x: 0.0
+      y: 0.0
+      z: 0.039
+      roll: 0.0
+      pitch: 0.0
+      yaw: 0.0
+      radius: 0.014
+      length: 0.08
+
+interactive_marker:
+  base_frame: "zero_link"
+  control_scale: 0.5
+  scale:
+    x: 0.1
+    y: 0.1
+    z: 0.0095
+  position:
+    x: 0.0
+    y: 0.0
+    z: 0.0048
+  orientation:
+    w: 1.0
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  color:
+    r: 0.0
+    g: 0.0
+    b: 1.0
+    a: 0.8

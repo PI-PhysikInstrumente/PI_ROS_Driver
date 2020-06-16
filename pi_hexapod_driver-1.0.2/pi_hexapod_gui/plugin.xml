@@ -1,0 +1,12 @@
+<library path="src">
+  <class name="PiHexapodGUI" type="pi_hexapod_gui.hexapod_gui_plugin.PiGuiPlugin" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      A GUI plugin to operate PI Hexapods with a comfortable user interface.
+    </description>
+    <qtgui>
+      <label>PI Hexapod GUI</label>
+      <icon type="theme">system-help</icon>
+      <statustip>User interface to operate PI Hexapods.</statustip>
+    </qtgui>
+  </class>
+</library>

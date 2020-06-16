@@ -1,0 +1,453 @@
+<?xml version="1.0"?>
+
+<!-- This macro creates an URDF description of a PI Hexapod.
+     A hexapod-specific configuration file is needed. -->
+
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:macro name="pi_hexapod" params="hexapod_parameters transmission_hw_interface:=hardware_interface/PositionJointInterface">
+
+  <xacro:property name="vel_max_xyz" value="${hexapod_parameters['vel_max_xyz']}" />
+  <xacro:property name="vel_max_uvw" value="${hexapod_parameters['vel_max_uvw']}" />
+  <xacro:property name="effort_limit" value="${hexapod_parameters['effort_limit']}" />
+
+  <material name="gray">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+  </material>
+
+    <link name="base_link">
+      <visual>
+        <origin xyz="${hexapod_parameters['base']['visual']['x']}
+                     ${hexapod_parameters['base']['visual']['y']}
+                     ${hexapod_parameters['base']['visual']['z']}"
+                rpy="${hexapod_parameters['base']['visual']['roll']}
+                     ${hexapod_parameters['base']['visual']['pitch']}
+                     ${hexapod_parameters['base']['visual']['yaw']}"/>
+        <geometry>
+          <mesh filename="${hexapod_parameters['base']['visual']['mesh']}"
+                scale="${hexapod_parameters['base']['visual']['scale']}
+                       ${hexapod_parameters['base']['visual']['scale']}
+                       ${hexapod_parameters['base']['visual']['scale']}" />
+        </geometry>
+        <material name="gray" />
+      </visual>
+     <collision>
+        <origin xyz="${hexapod_parameters['base']['collision']['x']}
+                     ${hexapod_parameters['base']['collision']['y']}
+                     ${hexapod_parameters['base']['collision']['z']}"
+                rpy="${hexapod_parameters['base']['collision']['roll']}
+                     ${hexapod_parameters['base']['collision']['pitch']}
+                     ${hexapod_parameters['base']['collision']['yaw']}"/>
+       <geometry>
+         <cylinder radius="${hexapod_parameters['base']['collision']['radius']}"
+                   length="${hexapod_parameters['base']['collision']['length']}"/>
+       </geometry>
+     </collision>
+    </link>
+
+    <link name="zero_link">
+    </link>
+
+    <joint name="base_to_zero_joint_fixed" type="fixed">
+      <parent link="base_link"/>
+      <child link="zero_link" />
+      <origin xyz="0 0 ${hexapod_parameters['base_height']}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- - - - - - - - - - - - - - - - - -->
+    <!--          ACTUATED LINKS         -->
+    <!-- - - - - - - - - - - - - - - - - -->
+    <xacro:macro name="hexapod_dof_cart" params="var parent lower_limit upper_limit *axis">
+      <link name="${var}_link">
+      </link>
+
+      <joint name="cart_${var}" type="prismatic">
+        <parent link="${parent}_link"/>
+        <child link="${var}_link" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <xacro:insert_block name="axis" />
+        <limit effort="${effort_limit}" lower="${lower_limit}" upper="${upper_limit}" velocity="${vel_max_xyz}"/>
+      </joint>
+    </xacro:macro>
+
+    <xacro:hexapod_dof_cart var="x" parent="zero" lower_limit="${hexapod_parameters['x']['lower_limit']}"
+                                                  upper_limit="${hexapod_parameters['x']['upper_limit']}" >
+      <axis xyz="1 0 0"/>
+    </xacro:hexapod_dof_cart>
+
+    <xacro:hexapod_dof_cart var="y" parent="x"    lower_limit="${hexapod_parameters['y']['lower_limit']}"
+                                                  upper_limit="${hexapod_parameters['y']['upper_limit']}" >
+      <axis xyz="0 1 0"/>
+    </xacro:hexapod_dof_cart>
+
+    <xacro:hexapod_dof_cart var="z" parent="y"    lower_limit="${hexapod_parameters['z']['lower_limit']}"
+                                                  upper_limit="${hexapod_parameters['z']['upper_limit']}" >
+      <axis xyz="0 0 1"/>
+    </xacro:hexapod_dof_cart>
+
+    <xacro:macro name="hexapod_dof_ang" params="var parent lower_limit upper_limit *axis">
+      <link name="${var}_link">
+      </link>
+
+      <joint name="ang_${var}" type="revolute">
+        <parent link="${parent}_link"/>
+        <child link="${var}_link" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <xacro:insert_block name="axis" />
+        <limit effort="${effort_limit}" lower="${lower_limit}" upper="${upper_limit}" velocity="${vel_max_uvw}"/>
+      </joint>
+    </xacro:macro>
+
+    <xacro:hexapod_dof_ang var="u" parent="z" lower_limit="${hexapod_parameters['u']['lower_limit']}"
+                                              upper_limit="${hexapod_parameters['u']['upper_limit']}" >
+      <axis xyz="1 0 0"/>
+    </xacro:hexapod_dof_ang>
+
+    <xacro:hexapod_dof_ang var="v" parent="u" lower_limit="${hexapod_parameters['v']['lower_limit']}"
+                                              upper_limit="${hexapod_parameters['v']['upper_limit']}" >
+      <axis xyz="0 1 0"/>
+    </xacro:hexapod_dof_ang>
+
+    <xacro:hexapod_dof_ang var="w" parent="v" lower_limit="${hexapod_parameters['w']['lower_limit']}"
+                                              upper_limit="${hexapod_parameters['w']['upper_limit']}" >
+      <axis xyz="0 0 1"/>
+    </xacro:hexapod_dof_ang>
+
+    <link name="platform_link">
+      <visual>
+        <origin xyz="${hexapod_parameters['platform']['visual']['x']}
+                     ${hexapod_parameters['platform']['visual']['y']}
+                     ${hexapod_parameters['platform']['visual']['z']}"
+                rpy="${hexapod_parameters['platform']['visual']['roll']}
+                     ${hexapod_parameters['platform']['visual']['pitch']}
+                     ${hexapod_parameters['platform']['visual']['yaw']}"/>
+        <geometry>
+          <mesh filename="${hexapod_parameters['platform']['visual']['mesh']}"
+                scale="${hexapod_parameters['platform']['visual']['scale']}
+                       ${hexapod_parameters['platform']['visual']['scale']}
+                       ${hexapod_parameters['platform']['visual']['scale']}" />
+        </geometry>
+        <material name="gray" />
+      </visual>
+       <collision>
+        <origin xyz="${hexapod_parameters['platform']['collision']['x']}
+                     ${hexapod_parameters['platform']['collision']['y']}
+                     ${hexapod_parameters['platform']['collision']['z']}"
+                rpy="${hexapod_parameters['platform']['collision']['roll']}
+                     ${hexapod_parameters['platform']['collision']['pitch']}
+                     ${hexapod_parameters['platform']['collision']['yaw']}"/>
+         <geometry>
+           <cylinder radius="${hexapod_parameters['platform']['collision']['radius']}"
+                     length="${hexapod_parameters['platform']['collision']['length']}" />
+         </geometry>
+       </collision>
+    </link>
+
+    <joint name="platform_joint_fixed" type="fixed">
+      <parent link="w_link"/>
+      <child link="platform_link" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- - - - - - - - - - - - - - - - -->
+    <!--          ANCHOR LINKS         -->
+    <!-- - - - - - - - - - - - - - - - -->
+    <xacro:macro name="hexapod_anchor" params="var parent x y z visual_mesh visual_scale visual_x visual_y visual_z visual_roll visual_pitch visual_yaw collision_x collision_y collision_z collision_roll collision_pitch collision_yaw collision_radius collision_length">
+      <link name="${var}_anchor_link_1">
+      </link>
+
+      <joint name="${var}_anchor_joint_x" type="continuous">
+        <parent link="${parent}"/>
+        <child link="${var}_anchor_link_1" />
+	<origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+	<axis xyz="1 0 0" />
+      </joint>
+
+      <link name="${var}_anchor_link_2">
+      </link>
+
+      <joint name="${var}_anchor_joint_y" type="continuous">
+        <parent link="${var}_anchor_link_1"/>
+        <child link="${var}_anchor_link_2" />
+        <origin xyz="0 0.0 0.0" rpy="0 0 0"/>
+        <axis xyz="0 1 0" />
+      </joint>
+
+      <link name="${var}_anchor_link_3">
+        <visual>
+	  <origin xyz="${visual_x} ${visual_y} ${visual_z}" rpy="${visual_roll} ${visual_pitch} ${visual_yaw}"/>
+          <geometry>
+            <mesh filename="${visual_mesh}" scale="${visual_scale} ${visual_scale} ${visual_scale}" />
+          </geometry>
+        <material name="gray" />
+        </visual>
+        <collision>
+	  <origin xyz="${collision_x}
+                       ${collision_y}
+                       ${collision_z}"
+                  rpy="${collision_roll}
+                       ${collision_pitch}
+                       ${collision_yaw}"/>
+          <geometry>
+           <cylinder radius="${collision_radius}"
+                     length="${collision_length}"/>
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="${var}_anchor_joint_z" type="continuous">
+        <parent link="${var}_anchor_link_2"/>
+        <child link="${var}_anchor_link_3" />
+        <origin xyz="0 0.0 0.0" rpy="0 0 0"/>
+        <axis xyz="0 0 1" />
+      </joint>
+
+    </xacro:macro>
+
+    <!-- all axis base links need to be shifted by base_height in Z because
+         the z component of base_anchor is given in relation to zero_link, not to base_link-->
+    <xacro:hexapod_anchor var="axis0_base" parent="base_link"
+                          x=               "${hexapod_parameters['axis_0']['base_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_0']['base_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_0']['base_anchor']['z'] + hexapod_parameters['base_height']}"
+                          visual_mesh=     "${hexapod_parameters['axis_0']['base_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_0']['base_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_0']['base_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_0']['base_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_0']['base_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_0']['base_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_0']['base_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_0']['base_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_0']['base_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_0']['base_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_0']['base_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_0']['base_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_0']['base_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_0']['base_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_0']['base_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_0']['base_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis1_base" parent="base_link"
+                          x=               "${hexapod_parameters['axis_1']['base_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_1']['base_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_1']['base_anchor']['z'] + hexapod_parameters['base_height']}"
+                          visual_mesh=     "${hexapod_parameters['axis_1']['base_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_1']['base_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_1']['base_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_1']['base_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_1']['base_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_1']['base_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_1']['base_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_1']['base_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_1']['base_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_1']['base_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_1']['base_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_1']['base_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_1']['base_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_1']['base_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_1']['base_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_1']['base_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis2_base" parent="base_link"
+                          x=               "${hexapod_parameters['axis_2']['base_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_2']['base_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_2']['base_anchor']['z'] + hexapod_parameters['base_height']}"
+                          visual_mesh=     "${hexapod_parameters['axis_2']['base_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_2']['base_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_2']['base_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_2']['base_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_2']['base_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_2']['base_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_2']['base_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_2']['base_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_2']['base_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_2']['base_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_2']['base_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_2']['base_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_2']['base_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_2']['base_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_2']['base_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_2']['base_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis3_base" parent="base_link"
+                          x=               "${hexapod_parameters['axis_3']['base_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_3']['base_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_3']['base_anchor']['z'] + hexapod_parameters['base_height']}"
+                          visual_mesh=     "${hexapod_parameters['axis_3']['base_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_3']['base_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_3']['base_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_3']['base_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_3']['base_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_3']['base_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_3']['base_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_3']['base_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_3']['base_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_3']['base_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_3']['base_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_3']['base_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_3']['base_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_3']['base_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_3']['base_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_3']['base_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis4_base" parent="base_link"
+                          x=               "${hexapod_parameters['axis_4']['base_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_4']['base_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_4']['base_anchor']['z'] + hexapod_parameters['base_height']}"
+                          visual_mesh=     "${hexapod_parameters['axis_4']['base_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_4']['base_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_4']['base_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_4']['base_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_4']['base_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_4']['base_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_4']['base_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_4']['base_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_4']['base_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_4']['base_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_4']['base_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_4']['base_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_4']['base_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_4']['base_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_4']['base_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_4']['base_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis5_base" parent="base_link"
+                          x=               "${hexapod_parameters['axis_5']['base_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_5']['base_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_5']['base_anchor']['z'] + hexapod_parameters['base_height']}"
+                          visual_mesh=     "${hexapod_parameters['axis_5']['base_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_5']['base_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_5']['base_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_5']['base_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_5']['base_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_5']['base_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_5']['base_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_5']['base_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_5']['base_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_5']['base_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_5']['base_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_5']['base_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_5']['base_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_5']['base_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_5']['base_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_5']['base_anchor']['collision']['length']}"/>
+
+    <xacro:hexapod_anchor var="axis0_platform" parent="platform_link"
+                          x=               "${hexapod_parameters['axis_0']['platform_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_0']['platform_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_0']['platform_anchor']['z']}"
+                          visual_mesh=     "${hexapod_parameters['axis_0']['platform_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_0']['platform_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_0']['platform_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_0']['platform_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_0']['platform_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_0']['platform_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_0']['platform_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_0']['platform_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_0']['platform_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_0']['platform_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_0']['platform_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_0']['platform_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_0']['platform_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_0']['platform_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_0']['platform_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_0']['platform_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis1_platform" parent="platform_link"
+                          x=               "${hexapod_parameters['axis_1']['platform_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_1']['platform_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_1']['platform_anchor']['z']}"
+                          visual_mesh=     "${hexapod_parameters['axis_1']['platform_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_1']['platform_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_1']['platform_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_1']['platform_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_1']['platform_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_1']['platform_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_1']['platform_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_1']['platform_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_1']['platform_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_1']['platform_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_1']['platform_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_1']['platform_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_1']['platform_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_1']['platform_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_1']['platform_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_1']['platform_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis2_platform" parent="platform_link"
+                          x=               "${hexapod_parameters['axis_2']['platform_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_2']['platform_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_2']['platform_anchor']['z']}"
+                          visual_mesh=     "${hexapod_parameters['axis_2']['platform_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_2']['platform_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_2']['platform_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_2']['platform_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_2']['platform_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_2']['platform_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_2']['platform_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_2']['platform_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_2']['platform_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_2']['platform_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_2']['platform_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_2']['platform_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_2']['platform_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_2']['platform_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_2']['platform_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_2']['platform_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis3_platform" parent="platform_link"
+                          x=               "${hexapod_parameters['axis_3']['platform_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_3']['platform_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_3']['platform_anchor']['z']}"
+                          visual_mesh=     "${hexapod_parameters['axis_3']['platform_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_3']['platform_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_3']['platform_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_3']['platform_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_3']['platform_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_3']['platform_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_3']['platform_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_3']['platform_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_3']['platform_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_3']['platform_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_3']['platform_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_3']['platform_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_3']['platform_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_3']['platform_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_3']['platform_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_3']['platform_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis4_platform" parent="platform_link"
+                          x=               "${hexapod_parameters['axis_4']['platform_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_4']['platform_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_4']['platform_anchor']['z']}"
+                          visual_mesh=     "${hexapod_parameters['axis_4']['platform_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_4']['platform_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_4']['platform_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_4']['platform_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_4']['platform_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_4']['platform_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_4']['platform_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_4']['platform_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_4']['platform_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_4']['platform_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_4']['platform_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_4']['platform_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_4']['platform_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_4']['platform_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_4']['platform_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_4']['platform_anchor']['collision']['length']}"/>
+    <xacro:hexapod_anchor var="axis5_platform" parent="platform_link"
+                          x=               "${hexapod_parameters['axis_5']['platform_anchor']['x']}"
+                          y=               "${hexapod_parameters['axis_5']['platform_anchor']['y']}"
+                          z=               "${hexapod_parameters['axis_5']['platform_anchor']['z']}"
+                          visual_mesh=     "${hexapod_parameters['axis_5']['platform_anchor']['visual']['mesh']}"
+                          visual_scale=    "${hexapod_parameters['axis_5']['platform_anchor']['visual']['scale']}"
+                          visual_x=        "${hexapod_parameters['axis_5']['platform_anchor']['visual']['x']}"
+                          visual_y=        "${hexapod_parameters['axis_5']['platform_anchor']['visual']['y']}"
+                          visual_z=        "${hexapod_parameters['axis_5']['platform_anchor']['visual']['z']}"
+                          visual_roll=     "${hexapod_parameters['axis_5']['platform_anchor']['visual']['roll']}"
+                          visual_pitch=    "${hexapod_parameters['axis_5']['platform_anchor']['visual']['pitch']}"
+                          visual_yaw=      "${hexapod_parameters['axis_5']['platform_anchor']['visual']['yaw']}"
+                          collision_x=     "${hexapod_parameters['axis_5']['platform_anchor']['collision']['x']}"
+                          collision_y=     "${hexapod_parameters['axis_5']['platform_anchor']['collision']['y']}"
+                          collision_z=     "${hexapod_parameters['axis_5']['platform_anchor']['collision']['z']}"
+                          collision_roll=  "${hexapod_parameters['axis_5']['platform_anchor']['collision']['roll']}"
+                          collision_pitch= "${hexapod_parameters['axis_5']['platform_anchor']['collision']['pitch']}"
+                          collision_yaw=   "${hexapod_parameters['axis_5']['platform_anchor']['collision']['yaw']}"
+                          collision_radius="${hexapod_parameters['axis_5']['platform_anchor']['collision']['radius']}"
+                          collision_length="${hexapod_parameters['axis_5']['platform_anchor']['collision']['length']}"/>
+
+
+  </xacro:macro>
+</robot>
