@@ -48,7 +48,7 @@ platform:
     0.009
   visual:
     mesh:
-      "package://pi_hexapod_description/meshes/H-811/H_811.I2_platform.stl"
+      "package://pi_hexapod_description/meshes/H-811/H_811.I2_platform_with_logo.dae"
     scale:    # to convert from mm to m
       0.001
     x:        # M811_CAD.ini -> [H-811.I2] -> PlatformOffset_X (conver mm in m)

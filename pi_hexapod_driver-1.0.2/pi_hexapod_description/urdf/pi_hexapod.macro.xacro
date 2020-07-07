@@ -127,7 +127,6 @@
                        ${hexapod_parameters['platform']['visual']['scale']}
                        ${hexapod_parameters['platform']['visual']['scale']}" />
         </geometry>
-        <material name="gray" />
       </visual>
        <collision>
         <origin xyz="${hexapod_parameters['platform']['collision']['x']}

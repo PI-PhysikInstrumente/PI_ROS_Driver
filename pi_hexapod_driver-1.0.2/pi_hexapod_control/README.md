@@ -10,7 +10,7 @@ The package is using ROS control and builds on the known interfaces and paradigm
 Please consider the license information provided with this repository.
 
 ## Setup
-Due to the library used for connecting to the PI Hexapod, this Driver can only be used on x86
+Due to the library used for connecting to the PI Hexapod, this Driver can only be used on x86-64
 architectures.
 
 A number of general ROS tutorials can be found at the [ROS wiki](http://wiki.ros.org/ROS/Tutorials).
