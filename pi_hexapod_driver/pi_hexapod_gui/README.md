@@ -13,7 +13,9 @@ A brief description of the relevant directories and their content:
 
 ##### Using the PI Hexapod Mainboard:
 - This preconfigured rqt-perspective can be started via the "Perspectives" menu on the top of rqt. Select "Import" and navigate to the corresponding file.
-
+- The RViz-View in the upper left corner uses the default configuration.
+  You can open the configuration provided with the pi\_hexapod\_driver by using the `File` -> `Open Config` or pressing Ctrl+O after clicking inside the RViz View.
+  The configuration file is located in `pi_hexapod_control/cfg/default_hexapod.rviz`.
 ---
 
 ### License

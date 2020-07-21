@@ -37,12 +37,21 @@ Clone this repository, install dependencies and build the workspace:
     cd ~/catkin_ws/
     rosdep install --from-paths src --ignore-src -r -y
     catkin_make
+	source devel/setup.bash
 ```
 
 Now, the driver is ready to be used. For example, run the following command to start a simulated
 hexapod and an interactive marker to control it:
 ```
     roslaunch pi_hexapod_control interactive_marker.launch sim:=true
+```
+
+## PI GCS2 Library
+As default, pi\_hexapod\_control is build against `libpi_pi_gcs2-3.11.0.a` provided in the
+`lib` directory of this package.
+To build against a shared version of this library, set the `PI_GCS2_PATH` cmake option.
+```
+    catkin_make --cmake-args -DPI_GCS2_PATH="/usr/local/PI/lib64/libpi_pi_gcs2.so.3.11.0"
 ```
 
 ## Usage

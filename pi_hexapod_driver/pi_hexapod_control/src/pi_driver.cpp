@@ -90,11 +90,17 @@ bool HardwarePiDriver::connect()
   // setup connection
   if (using_tcp_ip_connection_)
   {
+    LOG_INFO_STREAM("Calling PI_ConnectTCPIP with " << const_cast<char*>(hexapod_ip_.c_str())
+                                                    << " and " << hexapod_port_ << ".");
     pi_id_ = PI_ConnectTCPIP(const_cast<char*>(hexapod_ip_.c_str()), hexapod_port_);
+    LOG_INFO_STREAM("PI_ConnectTCPIP returned " << pi_id_ << ".");
   }
   else if (using_rs232_connection_)
   {
+    LOG_INFO_STREAM("Calling PI_ConnectRS232 with " << rs232_port_nr_ << " and " << baudrate_
+                                                    << ".");
     pi_id_ = PI_ConnectRS232(rs232_port_nr_, baudrate_);
+    LOG_INFO_STREAM("PI_ConnectRS232 returned " << pi_id_ << ".");
   }
   else
   {

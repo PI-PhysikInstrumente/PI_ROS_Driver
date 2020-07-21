@@ -4,8 +4,8 @@
 # This file is part of the PI-Hexapod Driver.
 #
 #
-# © Copyright 2020 Physik Instrumente (PI) GmbH & Co. KG, Karlsruhe, Germany
-# © Copyright 2020 FZI Forschungszentrum Informatik, Karlsruhe, Germany
+# (c) Copyright 2020 Physik Instrumente (PI) GmbH & Co. KG, Karlsruhe, Germany
+# (c) Copyright 2020 FZI Forschungszentrum Informatik, Karlsruhe, Germany
 # -- END LICENSE BLOCK ------------------------------------------------
 
 # This file contains the implementation of the corresponing RQT plugin functionality.

@@ -4,6 +4,8 @@ project(pi_hexapod_control)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
+option(PI_GCS2_PATH "Optional: path to the shared version of pi_pi_gcs2.s.o" OFF)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -146,12 +148,26 @@ add_library(pi_hexapod_driver
   src/pi_errors.cpp
   src/pi_driver.cpp
 )
+if(NOT PI_GCS2_PATH)
+  # PI_GCS2_PATH is 0, OFF, NO, FALSE, N, IGNORE, NOTFOUND, an empty string
+  target_link_libraries(pi_hexapod_driver
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/libpi_pi_gcs2-3.11.0.a
+  )
+else()
+  # PI_GCS2_PATH is set
+  add_library(pi_pi_gcs2 STATIC IMPORTED)
+  set_target_properties(pi_pi_gcs2 PROPERTIES
+    IMPORTED_LOCATION "${PI_GCS2_PATH}")
+  target_link_libraries(pi_hexapod_driver
+    pi_pi_gcs2
+  )
+endif()
 target_link_libraries(pi_hexapod_driver
-  ${CMAKE_CURRENT_SOURCE_DIR}/lib/libpi_pi_gcs2-3.11.0.a
   z
   usb-1.0
   ${catkin_LIBRARIES}
 )
+
 add_dependencies(pi_hexapod_driver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 # HardwareInterface as library
