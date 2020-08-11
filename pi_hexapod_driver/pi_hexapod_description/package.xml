@@ -4,9 +4,9 @@
   <version>1.0.5</version>
   <description>URDF descriptions for Physik Instrumente (PI) Hexapods</description>
 
-  <maintainer email="todo@todo.todo">TODO</maintainer>
+  <maintainer email="service@pi.de">"Physik Instrumente (PI) GmbH u. Co. KG"</maintainer>
 
-  <license>TODO</license>
+  <license>Apache-2.0</license>
 
   <author email="eichmann@fzi.de">Christian Eichmann</author>
   <author email="keller@fzi.de">Philip Keller</author>
